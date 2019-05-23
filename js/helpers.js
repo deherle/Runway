@@ -711,6 +711,7 @@ function getFileIconNameByExtension(extension) {
         case 'flv':
         case 'wmv':
         case 'mov':
+        case 'webm':
             return 'file video outline icon';
         case 'doc':
         case 'docx':
