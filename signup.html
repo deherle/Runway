@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" />
+    <meta content="width=device-width, initial-scale=1, maximum-scale=2, user-scalable=no" name="viewport" />
+    
+    <title>Signup</title>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous">
+    </script>
+    <script type="text/javascript" src="https://sdk.amazonaws.com/js/aws-sdk-2.294.0.min.js"></script>
+    <script type="text/javascript" src="js/semantic.min.js"></script>
+    <script type="text/javascript" src="https://apis.google.com/js/api:client.js"></script>
+    <script type="text/javascript" src="js/amazon-cognito-identity.min.js"></script>
+    <script type="text/javascript" src="js/auth.js"></script>
+
+    <script>
+      window.onload = function() {
+        $('#google-button').click(function(){
+          window.location.replace('https://auth.gorunway.co/oauth2/authorize?redirect_uri=https://app.gorunway.co&response_type=token&client_id=6ls106hn6p6cci7e2b6hch5coa&identity_provider=Google');
+        });
+
+      }
+        /*
+        var googleUser = {};
+        var startApp = function() {
+            gapi.load('auth2', function(){
+            // Retrieve the singleton for the GoogleAuth library and set up the client.
+            auth2 = gapi.auth2.init({
+                client_id: '1007622622349-0dkacu0g04a49ghfr4hspbfsgur9a1ol.apps.googleusercontent.com',
+                cookiepolicy: 'single_host_origin',
+                // Request scopes in addition to 'profile' and 'email'
+                //scope: 'additional_scope'
+            });
+            attachSignin(document.getElementById('google-button'));
+            });
+        };
+        
+        function attachSignin(element) {
+          console.log(element.id);
+          auth2.attachClickHandler(element, {},
+              function(googleUser) {
+                console.log("Signed in: " + googleUser.getBasicProfile().getName());
+                console.log("Google id_token: " + googleUser.getAuthResponse().id_token);
+
+                // Add the Google access token to the Cognito credentials login map.
+                AWS.config.region = 'us-east-1';
+                AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+                    IdentityPoolId: 'us-east-1:b5a6850c-e5cf-436b-8aed-ebe2c01ec68d',
+                    Logins: {
+                      'accounts.google.com': googleUser.getAuthResponse().id_token
+                    }
+                });
+
+                // Obtain AWS credentials
+                AWS.config.credentials.get(function(err){
+                  if (err) {
+                    console.log(err);
+                    return;
+                  }
+                  window.location.replace('https://runway.auth.us-east-1.amazoncognito.com/oauth2/authorize?redirect_uri=your_redirect_uri&response_type=token&client_id=xxxx&identity_provider=Facebook');
+                });
+
+              }, function(error) {
+                console.log(JSON.stringify(error, undefined, 2));
+              });
+        }*/
+    </script>
+    <link rel="stylesheet" type="text/css" href="css/semantic.min.css">
+  </head>
+  <body>
+    <div class="ui center aligned grid">
+      <div class="ui container">
+          <div class="ui inverted dimmer spinner">
+              <div class="ui text loader">Working...</div>
+            </div>
+        <div style="text-align: center; margin-bottom: 2em;">
+            <h1 class="ui huge header">
+            Create a Runway account 
+            </h1>
+            <a href="signin.html">
+                <h4>Or did you mean to login?</h4>
+            </a>
+        </div>
+        <div class="field">
+            <div class="ui fluid large red submit button" id="google-button" style="margin-bottom: 1em;">
+                <i class="google icon"></i>
+                Sign up with Google
+            </div>
+        </div>
+        <div class="field">
+            <div class="ui fluid large blue submit button" style="margin-bottom: 1em;">
+                <i class="facebook icon"></i>
+                Sign up with Facebook
+            </div>
+        </div>
+        <div class="ui large form">
+          <div class="field" style="text-align: center;">
+            <i>or</i>
+          </div>
+          <div class="field">
+            <div class="ui left icon input">
+                <i class="user icon"></i><input name="name" placeholder="Name" type="text" id="name"/>
+            </div>
+          </div>
+          <div class="field">
+            <div class="ui left icon input">
+              <i class="mail icon"></i><input name="email" placeholder="E-mail address" type="text" id="email"/>
+            </div>
+          </div>
+          <div class="field">
+            <div class="ui left icon input">
+              <i class="lock icon"></i><input name="password" placeholder="Password" type="password" id="password"/>
+            </div>
+          </div>
+          <div class="field">
+            <div class="ui checkbox">
+              <input class="hidden" tabindex="0" type="checkbox" /><label>Remember me</label>
+            </div>
+          </div>
+          <div class="ui fluid large primary submit button" onclick="onSignupButtonClick();">
+            Sign up
+          </div>
+        </div>
+        <h4 style="color: #777;">
+            By creating a Runway account, you agree to our <a>Terms of Service</a> and <a>Privacy Policy.</a>
+        </h4>
+      </div>
+    </div>
+    <div class="ui mini modal enter-code">
+        <i class="close icon"></i>
+        <div class="header" style="text-align: center;">
+            Success!
+        </div>
+        <div class="content">
+            <p>We just created your account. Enter the verification code we just sent to your email address.</p>
+            <div class="ui input">
+                <input type="text" id="code-input" placeholder="53422">
+            </div>
+            <p id="code-error" style="color: red; margin-top: 10px;">Whoops! Looks like that code didn't work, please try again.</p>
+        </div>
+        <div class="actions center" style="text-align: center;">
+            <div class="ui button center positive approve">Submit</div>
+        </div>
+    </div>
+    <div class="ui mini modal duplicate-username">
+        <i class="close icon"></i>
+        <div class="header" style="text-align: center;">
+            Whoops!
+        </div>
+        <div class="content">
+            <p>Looks like an account with this email address already exists - did you mean to <a href="signin.html">login?</a></p>
+        </div>
+        <div class="actions center" style="text-align: center;">
+            <div class="ui button center positive approve">OK</div>
+        </div>
+    </div>
+    <div class="ui mini modal code-validated">
+        <i class="close icon"></i>
+        <div class="header" style="text-align: center;">
+            Email verified
+        </div>
+        <div class="content">
+            <p>Success! Click <a href="signin.html">here</a> to login to Runway.</p>
+        </div>
+        <div class="actions center" style="text-align: center;">
+            <div class="ui button center positive approve">OK</div>
+        </div>
+    </div>
+    <style type="text/css">
+      .ui.container {
+        margin-top: 6em;
+        max-width: 30em !important;
+      }
+    </style>
+    <script>
+      $(document)
+        .ready(function() {
+          $('.ui.checkbox').checkbox();
+          $('.ui.form')
+            .form({
+              fields: {
+                name: {
+                  identifier  : 'name',
+                  rules: [
+                    {
+                      type   : 'empty',
+                      prompt : 'Please enter your name'
+                    }
+                  ]
+                },
+                email: {
+                  identifier  : 'email',
+                  rules: [
+                    {
+                      type   : 'empty',
+                      prompt : 'Please enter your e-mail'
+                    },
+                    {
+                      type   : 'email',
+                      prompt : 'Please enter a valid e-mail'
+                    }
+                  ]
+                },
+                password: {
+                  identifier  : 'password',
+                  rules: [
+                    {
+                      type   : 'empty',
+                      prompt : 'Please enter your password'
+                    },
+                    {
+                      type   : 'length[8]',
+                      prompt : 'Your password must be at least 8 characters'
+                    }
+                  ]
+                }
+              },
+              inline: true,
+              on: 'blur'
+            })
+          ;
+        });
+        startApp();
+    </script>
+  </body>
+</html>

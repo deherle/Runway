@@ -1,0 +1,422 @@
+ <html>
+    <head>
+        <title>Runway</title>
+        <meta name=viewport content="width=device-width, initial-scale=1">
+        <link rel="icon" type="img/ico" href="favicon.ico">
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <link rel="stylesheet" type="text/css" href="css/semantic.min.css">
+        <link rel="stylesheet" type="text/css" href="css/trix.css">
+        <link rel="stylesheet" type="text/css" href="css/calendar.min.css">
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css">
+        <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous">
+        </script>
+        <!-- Scripts related to signing API Gateway requests -->
+        <script type="text/javascript" src="js/axios.standalone.js"></script>
+        <script type="text/javascript" src="js/hmac-sha256.js"></script>
+        <script type="text/javascript" src="js/sha256.js"></script>
+        <script type="text/javascript" src="js/hmac.js"></script>
+        <script type="text/javascript" src="js/enc-base64.js"></script>
+        <script type="text/javascript" src="js/url-template.js"></script>
+        <script type="text/javascript" src="js/sigV4Client.js"></script>
+        <script type="text/javascript" src="js/apiGatewayClient.js"></script>
+        <script type="text/javascript" src="js/simpleHttpClient.js"></script>
+        <script type="text/javascript" src="js/utils.js"></script>
+        <script type="text/javascript" src="js/apigClient.js"></script>
+        <!-- END Scripts related to signing API Gateway requests -->
+
+        <script type="text/javascript" src="https://sdk.amazonaws.com/js/aws-sdk-2.294.0.min.js"></script>
+        <script type="text/javascript" src="js/amazon-cognito-identity.min.js"></script> 
+        <script type="text/javascript" src="js/semantic.min.js"></script>
+        <script type="text/javascript" src="js/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="js/calendar.min.js"></script>
+        <script type="text/javascript" src="js/trix.js"></script>
+        <script type="text/javascript" src="js/modals.js"></script>
+        <script type="text/javascript" src="js/moment.min.js"></script>
+        <script type="text/javascript" src="js/events.js"></script>
+        <script type="text/javascript" src="js/helpers.js"></script>
+        <script type="text/javascript" src="js/globals.js"></script>
+        <script type="text/javascript" src="js/auth.js"></script>
+        <script type="text/javascript" src="js/init.js"></script>
+    </head>
+    <body>
+        <div class="html ui top attached segment" style="border:none;">
+            <div class="ui top attached demo menu" style="border:none;">
+                <a class="item hamburger" onclick="toggleSidebar();">
+                    <i class="sidebar icon"></i>
+                </a>
+                <button class="ui icon compact positive button new-meeting-button" 
+                    onclick="onNewMeetingButtonClick();"
+                    style="margin: 10px;">
+                    <i class="plus icon"></i>
+                    New Meeting
+                </button>
+                <button class="ui icon button basic account-settings-button"
+                    style="font-size: 1.5em; -webkit-box-shadow: none; box-shadow: none;
+                    flex: 1;
+                    text-align: right;" id="app-settings-button"
+                    onclick="showAccountModal();">
+                    <i class="cog icon account-settings-button" data-content="Account settings"></i>
+                </button>
+            </div>
+            <div class="ui bottom attached segment pushable" style="border:none;">
+                <div class="ui labeled cards left inline vertical wide sidebar visible menu" style="border: none; box-shadow: none;">
+                    <div class="ui segment" style="height: 100%; border: none;">
+                        <div class="ui active inverted dimmer" id="sidebar-loader">
+                            <div class="ui text loader">Loading...</div>
+                        </div>
+                        <a class="ui raised card hidden" id="meeting-card-template" onclick="onMeetingCardClick(this);">
+                            <div class="content">
+                                <div class="header">Sales Team Meeting</div>
+                                <div class="meta date">June 6, 2018</div>
+                                <div class="meta time">2:30 - 3:00PM</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="pusher">
+                    <div class="desktop-icon hidden" style="text-align: center; height: 90%;">
+                        <img src='images/takeoff.svg' style="height: 100%; opacity: 0.5;"/>
+                    </div>
+                    <div class="ui segment raised paper">
+                        <div class="ui active inverted dimmer" id="meeting-loader">
+                            <div class="ui text loader">Saving...</div>
+                        </div>
+                        <div class="paper-inner">
+                            <div class="meeting-details">
+                                <div class="ui transparent massive input meeting-detail-wrapper meeting-title">
+                                    <input type="text" placeholder="Meeting Title" id="meeting-title-input">
+                                </div>
+                                <div class="ui icon basic buttons" style="float: right;">
+                                    <button class="ui button icon delete-meeting-button" data-content="Delete meeting" onclick="showDeleteMeetingModal();">
+                                        <i class="trash icon"></i>
+                                    </button>
+                                    <button class="ui button icon save-meeting-button" data-content="Save meeting" onclick="onSaveMeetingButtonClick();">
+                                        <i class="save icon"></i>
+                                    </button>
+                                    <div class="ui top right pointing dropdown button meeting-settings-button" data-content="Meeting tools">
+                                        <i class="cog icon"></i>
+                                        <div class="menu">
+                                            <div class="item" onclick="showMeetingLinkModal();"><i class="linkify icon"></i> Share link</div>
+                                            <div class="item"><i class="copy icon"></i> Clone meeting</div>
+                                            <div class="item"><i class="file pdf outline icon"></i> Generate PDF</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 5px";>
+                                    <i class="calendar icon" style="color: #777; margin-right: 15px;"></i>
+                                    <span class="ui transparent big input meeting-start-date">
+                                        <input class="" type="text" placeholder="Start Date">
+                                    </span>
+                                    <span class="ui transparent big input meeting-start-time">
+                                        <input type="text" placeholder="Start Time">
+                                    </span>
+                                    <span style="padding-right: 1px; font-weight: 900; font-size: 1.2em;
+                                    font-style: italic;">-to-</span>
+                                    <span class="ui transparent big input meeting-end-date">
+                                        <input type="text" placeholder="End Date">
+                                    </span>
+                                    <span class="ui transparent big input meeting-end-time">
+                                        <input type="text" placeholder="Start Time">
+                                    </span>
+                                </div>
+                                <div class="ui transparent big input meeting-detail-wrapper meeting-location">
+                                    <i class="map marker alternate icon" style="color: #777; margin-right: 12px;"></i>
+                                    <input type="text" placeholder="Location" style="width: 90%;">
+                                </div>
+                                <div class="ui transparent big input meeting-detail-wrapper meeting-attendees">
+                                    <i class="users icon" style="color: #777; margin-right: 12px;"></i>
+                                    <input type="text" placeholder="Attendees" style="width: 90%;">
+                                </div>
+                            </div>
+                            <div class="tab-area">
+                                <div class="ui top attached tabular menu" style="font-size: 1.3em;">
+                                    <a class="active item" data-tab="first">Agenda</a>
+                                    <a class="item" data-tab="second">Notes</a>
+                                    <a class="item" data-tab="third">Checklist</a>
+                                    <a class="item" data-tab="fourth">Files</a>
+                                    <a class="item" data-tab="fifth">Comments</a>
+                                </div>
+                                <div class="ui bottom attached active tab segment" data-tab="first">
+                                    <ul id="sortable" class"agenda-topics">
+                                        <li class="sortable-agenda-topic">
+                                            <div class="agenda-topic" topic-color="Green">
+                                                <div class="time-control">
+                                                    <div class="ui left right action input">
+                                                        <button class="ui left icon button" onclick="onMinusButtonClick(this);">
+                                                            <i class="minus icon"></i>
+                                                        </button>
+                                                        <input type="number" id="duration" class="topic-duration" placeholder="5">
+                                                        <label style="position: absolute; right: 56px; top: 10px;">mins</label>
+                                                        <button class="ui right icon button" onclick="onPlusButtonClick(this);">
+                                                            <i class="plus icon"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="ui input transparent massive topic-title">
+                                                    <input type="text" placeholder="Enter a topic">
+                                                </div>
+                                                <button class="circular ui icon basic button" onclick="onDeleteTopicButtonClick(this);">
+                                                    <i class="icon trash"></i>
+                                                </button>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <button class="ui labeled icon blue button" onclick="onAddTopicButtonClick();">
+                                        <i class="plus icon"></i>
+                                        Add topic
+                                    </button>
+                                </div>
+                                <div class="ui bottom attached tab segment" data-tab="second">
+                                    <div class="editor">
+                                        <trix-editor placeholder="Capture meeting notes, minutes or action items here..."></trix-editor>
+                                    </div>
+                                </div>
+                                <div class="ui bottom attached tab segment" data-tab="third">
+                                    <div class="progress-wrapper" style="margin: 30px 0 40px 0;">
+                                        <div class="ui indicating progress tiny" id="checklist-progress">
+                                            <div class="bar">
+                                                <!-- <div class="progress"></div> -->
+                                            </div>
+                                            <div class="label" style="color: rgba(0,0,0,.87);">Completed 2 of 10 items</div>
+                                        </div>
+                                    </div>
+                                    <ul id="sortable-check" class"checklist-outer" style="margin: 20px 0 20px 0; padding: 0; list-style: none;">
+                                        <li class="sortable-checklist-item">
+                                            <div class="checkitem-wrapper" style="margin-bottom: 15px;">
+                                                <div class="pretty p-icon p-round p-smooth" style="font-size: 1.5em;">
+                                                    <input id="checkbox-item" type="checkbox" />
+                                                    <div class="state p-success">
+                                                        <i class="icon check"></i>
+                                                        <label style="color: white;">Blah</label>
+                                                    </div>
+                                                </div>
+                                                <div class="ui input transparent" style="font-size: 1.3em; right: 60px; bottom: 3px; width: 83%;">
+                                                    <input id="checkbox-input" type="text" placeholder="Enter item text" />
+                                                </div>
+                                                <button class="circular ui icon basic button" onclick="onDeleteCheckItemButtonClick(this);">
+                                                    <i class="icon trash"></i>
+                                                </button>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <button class="ui labeled icon blue button" onclick="onAddChecklistItemButtonClick();">
+                                        <i class="plus icon"></i>
+                                        Add item
+                                    </button>
+                                </div>
+                                <div class="ui bottom attached tab segment" data-tab="fourth">
+                                    <div class="attachments-wrapper">
+                                        <div class="attachment attachment-template" attachment-id="" style="display: none;">
+                                            <div class="attachment-wrapper" style="border: 1px solid #eee; border-radius: 5px; margin-top: 20px; height: 70px; display: flex; flex-direction: row; align-items: center;">  
+                                                <div class="attachment-icon" style="flex: 0 0 60px; margin-left: 10px; position: relative; top: 12px; color:red;">
+                                                    <i style="font-size: 3em;" class="file pdf outline icon"></i>
+                                                </div>
+                                                <div class="attachment-meta" style="flex: 1 1 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 10px;">
+                                                    <div class="file-name" style="font-size: 1.6em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Special Council Meeting Minutes</div>
+                                                    <div style="color:#777; margin-top: 3px;"><span class="file-size">24kB</span>&nbsp;&#183;&nbsp;<span class="file-date">Uploaded February 23, 2019</span></div>
+                                                </div>
+                                                <div class="attachment-download" style="flex: 0 0 30px; margin-right: 10px;">
+                                                    <a class="circular ui icon basic button">
+                                                        <i class="icon cloud download"></i>
+                                                    </a>
+                                                </div>
+                                                <div class="attachment-cancel" style="flex: 0 0 30px; margin-right: 10px;">
+                                                    <button class="circular ui icon basic button" onclick="onCancelFileButtonClick(this);">
+                                                        <i class="icon close"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="attachment-delete" style="flex: 0 0 30px; margin-right: 10px;">
+                                                    <button class="circular ui icon basic button" onclick="onDeleteFileButtonClick(this);">
+                                                        <i class="icon trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="ui bottom attached active progress success attachment-progress">
+                                                <div class="bar"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="file-button-wrapper" style="margin-top: 20px;">
+                                        <label for="file-input" class="ui labeled icon blue button">
+                                            <i class="paperclip icon"></i>
+                                            Add File
+                                        </label>
+                                        <input type="file" id="file-input" multiple oninput="onFileUploadClick(this.files)" style="display: none">
+                                    </div>
+                                </div>
+                                <div class="ui bottom attached tab segment" data-tab="fifth">
+                                    <div class="comments-wrapper">
+                                        <div class="no-comments" style="margin-top: 20px;">
+                                            There are no comments for this meeting yet.
+                                        </div>
+                                        <div class="ui comments" style="margin-top: 20px; max-width: none;">
+                                            <div class="comment comment-template" style="display: none;">
+                                                <div class="avatar" style="height: 35px; width: 35px; background-color: orange; border-radius: 50%;">
+                                                    <span class="comment-icon-letter" style="color: white; font-size: 2em; position: relative; left: 7px;">R</span>
+                                                </div>
+                                                <div class="content">
+                                                    <a class="author">Matt</a>
+                                                    <div class="metadata">
+                                                        <span class="date">Today at 5:42PM</span>
+                                                    </div>
+                                                    <div class="text">
+                                                        How artistic!
+                                                    </div>
+                                                    <div class="actions">
+                                                        <a class="reply" onclick="onDeleteCommentClick(this);">Delete</a>
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>                                            
+                                        </div>
+                                        <div class="comment-enter" style="display: flex; flex-direction: row; align-items: center;">
+                                            <div class="avatar" style="height: 35px; width: 35px; background-color: #2185d0; border-radius: 50%; flex: 0 0 35px; margin-right: 12px;">
+                                                <i class="comment outline icon" style="color: white; font-size: 1.3em; position: relative; left: 7px; top: 7px;"></i>
+                                            </div>
+                                            <div class="ui input" style="flex: 1 1 90%;">
+                                                <input id="comment-input" placeholder="Say something about this meeting"></input>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ui modal long mini modal-account">
+            <i class="close icon"></i>
+            <div class="header">
+                Account
+                <div class="ui right floated" style="float: right;">
+                    <a href="" onclick="onSignOutClick(); return false;">Sign Out</a>
+                </div>
+            </div>
+            <div class="scrolling content">
+                <div class="account-info">
+                    <h2 class="ui center aligned header">
+                        <i class="plug icon"></i>
+                        <div class="content">
+                            Info
+                        </div>
+                    </h2>
+                    <div class="ui list">
+                        <div class="item">
+                            <div class="header">Name</div>
+                            Darin Herle
+                        </div>
+                        <div class="item">
+                            <div class="header">Email</div>
+                            darin@orcapartners.ca
+                        </div>
+                        <div class="item">
+                            <div class="header">Subscription</div>
+                            Free
+                        </div>
+                        <div class="item">
+                            <div class="header">Customer Since</div>
+                            July 1, 2017
+                        </div>
+                    </div>
+                </div>
+                <div class="account-invoices">
+                    <h2 class="ui header">
+                        <i class="file alternate outline icon"></i>
+                        <div class="content">
+                            Invoices
+                        </div>
+                    </h2>
+                    <div class="ui list">
+                        <a class="item">July 13, 2017</a>
+                        <a class="item">June 13, 2017</a>
+                        <a class="item">May 13, 2017</a>
+                        <span><i class="question circle icon"></i>
+                            Looking for older invoices? <a href="mailto:info@getrunway.com">Contact us</a>
+                        </span>
+                    </div>
+                </div>
+                <div class="account-delete">
+                    <h2 class="ui header">
+                        <i class="trash icon"></i>
+                        <div class="content">
+                            Remove
+                        </div>
+                    </h2>
+                    <p>Delete account and all associated data</p>
+                    <button class="negative ui button" onclick="showDeleteAccountModal();">Delete Account</button>
+                </div>
+            </div>
+        </div>
+        <div class="ui mini modal transition modal-delete-account">
+            <div class="header">
+                Delete Your Account
+            </div>
+            <div class="content">
+                <p>Are you sure you want to delete your account? This cannot be undone.</p>
+            </div>
+            <div class="actions">
+                <div class="ui negative button">
+                No
+                </div>
+                <div class="ui positive right labeled icon button">
+                Yes
+                <i class="checkmark icon"></i>
+                </div>
+            </div>
+        </div>
+        <div class="ui mini modal transition modal-delete-meeting">
+            <div class="header">
+                Delete Meeting
+            </div>
+            <div class="content">
+                <p>Are you sure you want to delete this meeting? This cannot be undone.</p>
+            </div>
+            <div class="actions">
+                <div class="ui negative deny button">
+                Cancel
+                </div>
+                <div class="ui positive approve right labeled icon button">
+                OK
+                <i class="checkmark icon"></i>
+                </div>
+            </div>
+        </div>
+        <div class="ui mini modal transition modal-invalid-upload">
+                <div class="header">
+                    Upload Error
+                </div>
+                <div class="content">
+                    <p>Sorry, you can't upload more than 5 files at a time and the maximum file size is 20 MB.</p>
+                </div>
+                <div class="actions">
+                    <div class="ui positive approve right labeled icon button">
+                    OK
+                    <i class="checkmark icon"></i>
+                    </div>
+                </div>
+            </div>
+        <div class="ui mini modal modal-share-meeting-link">
+            <i class="close icon"></i>
+            <div class="header">
+                Share this meeting 
+            </div>
+            <div class="content">
+                <div class="ui action input">
+                    <input type="text" id="copy-meeting-link-input" value="https://tryrunway/meeting/5rt3w0s1">
+                    <button class="ui icon button" onclick="copyMeetingLink();" data-content="Copy link">
+                        <i class="copy icon"></i>
+                    </button>
+                </div>
+                <p style="margin-top: 10px;">When you share your meeting with others, they can view your meeting
+                    but can't edit anything - only you can do that.
+                </p>
+            </div>
+            <div class="actions center">
+                <div class="ui button center positive">Done</div>
+            </div>
+        </div>
+    </body>
+</html>
