@@ -1,0 +1,256 @@
+.red {
+    color: #B03060;
+}
+
+.orange {
+    color: #FE9A76;
+}
+
+.yellow { 
+    color: #FFD700;
+}
+
+.olive {
+    color: #32CD32;
+}
+
+.green {
+    color: #016936;
+}
+
+.teal {
+    color: #008080;
+}
+
+.blue {
+    color: #0E6EB8;
+}
+
+.violet {
+    color: #EE82EE;
+}
+
+.purple {
+    color: #B413EC;
+}
+
+.pink {
+    color: #FF1493;
+}
+
+.brown {
+    color: #A52A2A;
+}
+
+.grey {
+    color: #A0A0A0;
+}
+
+.black {
+    color: #000000;
+}
+
+.white {
+    color: #ffffff;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.desktop {
+    background-color: #eeeeee;
+}
+
+#app-settings-button:active {
+    background: #fff !important;
+}
+
+.ui.yellow.card {
+    box-shadow: 0 0 0 1px #d4d4d5, 0 0px 2px 2px #fbbd08, 0 1px 3px 0 #d4d4d5 !important;
+}
+
+.hamburger:before {
+    background: none !important;
+}
+
+.hamburger:hover {
+    background: none !important;
+    color: #777 !important;
+}
+
+@media screen and (min-width: 1000px) { 
+
+    .paper {
+        width: 900px;
+        min-height: 90%;
+        margin: 0 auto !important;
+    }
+
+}
+
+@media screen and (max-width: 1000px) { 
+    
+    .paper {
+        margin: 0 20px;
+    }
+    
+}
+
+.paper-inner {
+    padding: 20px;
+}
+
+.meeting-detail-wrapper {
+    display: block !important;
+    margin-bottom: 5px;
+}
+
+.meeting-details {
+    margin-bottom: 20px;
+}
+
+.meeting-title {
+    font-size: 3em !important;
+    display: inline-block !important;
+    width: 80%;
+}
+
+.meeting-title input, .meeting-attendees input  {
+    width: 100%;
+}
+
+.tab-area .ui.attached.segment {
+    border: none !important;
+}
+
+.tab-area .ui.segment {
+    border: none !important;
+}
+
+.agenda-topic {
+    border: 1px solid #eeeeee;
+    border-left: 20px solid #21ba45;
+    padding: 20px;
+    border-radius: 5px;
+    display: flex;
+    margin-bottom: 10px;
+}
+
+#sortable {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.time-control {
+    display: inline;
+}
+
+.time-control input {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}
+
+.time-control button.left {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.time-control input[type='number'] {
+    -moz-appearance:textfield;
+    width: 80px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+.topic-title {
+    width: 100%;
+    margin-left: 25px;
+}
+
+trix-editor {
+    border: none !important;
+}
+
+trix-toolbar {
+    margin-top: 19px;
+}
+
+.trix-button-group {
+    background-color: white;
+    margin-right: 10px;
+}
+
+.trix-button-row {
+    justify-content: normal !important;
+}
+
+.editor {
+    min-height: 58%;
+    width: 100%;
+    margin: 15px auto auto 0;
+    padding: 6px 5px 4px 42px;
+    position: relative;
+    color: #444;
+    line-height: 20px;
+    border: 1px solid #d2d2d2;
+    background: #feffe9;
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#a9d8f1), color-stop(4%, #feffe9)) 0 4px;
+    background: -webkit-linear-gradient(top, #a9d8f1 0%, #feffe9  8%) 0 4px;
+    background: -moz-linear-gradient(top, #a9d8f1 0%, #feffe9  8%) 0 4px;
+    background: -ms-linear-gradient(top, #a9d8f1 0%, #feffe9 8%) 0 4px;
+    background: -o-linear-gradient(top, #a9d8f1 0%, #feffe9 8%) 0 4px;
+    background: linear-gradient(top, #a9d8f1 0%, #feffe9 8%) 0 4px;
+    -webkit-background-size: 100% 20px;
+    -moz-background-size: 100% 20px;
+    -ms-background-size: 100% 20px;
+    -o-background-size: 100% 20px;
+    background-size: 100% 20px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.07);
+    -moz-box-shadow: 0 1px 2px rgba(0,0,0,0.07);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.07);
+}
+
+.editor::before {
+    content: '';
+    position: absolute;
+    width: 4px;
+    top: 0;
+    left: 30px;
+    bottom: 0;
+    border: 1px solid;
+    border-color: transparent #efe4e4;
+}
+
+.editor-header {
+    background-color: #FFF;
+    min-height: 124px;
+    margin-left: -42px;
+    margin-top: -4px;
+}
+
+.modal-share-meeting-link .ui.action.input {
+    width: 100%;
+}
+
+.modal-share-meeting-link .actions {
+    text-align: center !important;
+}
+
+.modal-account .ui.list {
+    margin-bottom: 25px !important;
+}
+
+.pushable {
+    height: auto !important;
+}
+
+.pushable>.pusher {
+    min-height: auto !important;
+}
