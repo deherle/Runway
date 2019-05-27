@@ -301,10 +301,18 @@ function clearSidebar() {
 
 function loadSidebar() {
 
+    if(!AWS.config.credentials) {
+        if(location.hostname == 'localhost' || location.hostname == '') {
+            window.location.replace('file:///C:/meet/web/signin.html');
+        } else {
+            window.location.replace('https://www.gorunway.co/signin.html?retUrl=https://www.gorunway.co/meeting?id=' + gMeetingID);
+        }
+    }
+
     var poolData = {
         UserPoolId : 'us-east-1_sGM3cf79D',
         ClientId : '6ls106hn6p6cci7e2b6hch5coa',
-        //Storage: new CookieStorage({secure: false, domain: 'gorunway.co'})
+        Storage: new AmazonCognitoIdentity.CookieStorage({secure: false, domain: 'gorunway.co'})
     };
 
     var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
@@ -376,42 +384,6 @@ function loadSidebar() {
             
         }
     });
-
-    /*$.ajax({
-        method: 'GET',
-        url: 'https://api.gorunway.co/meetings',
-        contentType: "application/json",
-        success: function(data) {
-            
-            if(data.length == 0) {
-
-            } else {
-                $.each(data.Items, function(index, meeting) {
-
-                    var card = $('#meeting-card-template').clone();
-                    $(card).attr('id', '');
-                    $(card).find('.header').html(meeting.Title);
-                    let momentDate = new moment(meeting.StartTime);
-                    var dateString = momentDate.format('MMM D, YYYY');
-                    $(card).find('.date').html(dateString);
-                    dateString = momentDate.format('h:mma');
-                    momentDate = new moment(meeting.EndTime);
-                    dateString += ' - ' + momentDate.format('h:mma');
-                    $(card).find('.time').html(dateString);
-                    $(card).attr('meeting-id', meeting.MeetingID);
-                    $(card).removeClass('hidden');
-                    $(card).insertAfter('#meeting-card-template');
-                    
-                });
-
-                $('#sidebar-loader').removeClass('active');
-            }
-        },
-        error: function(data) {
-            console.log(data);
-            $('#meeting-loader').removeClass('active');
-        }
-    });*/
 
 }
 

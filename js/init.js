@@ -190,7 +190,7 @@ function onStartupLogic() {
         var poolData = {
             UserPoolId : 'us-east-1_sGM3cf79D',
             ClientId : '6ls106hn6p6cci7e2b6hch5coa',
-            //Storage: new CookieStorage({secure: false, domain: 'gorunway.co'})
+            Storage: new AmazonCognitoIdentity.CookieStorage({secure: false, domain: 'gorunway.co'})
         };
     
         var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);

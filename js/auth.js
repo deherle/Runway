@@ -121,7 +121,7 @@ function onSigninButtonClick() {
     var poolData = {
         UserPoolId : 'us-east-1_sGM3cf79D',
         ClientId : '6ls106hn6p6cci7e2b6hch5coa',
-        //Storage : new CookieStorage({secure: false, domain: 'gorunway.co'})
+        Storage : new AmazonCognitoIdentity.CookieStorage({secure: false, domain: 'gorunway.co'}) 
     };
     
     var userPool = 
@@ -138,7 +138,7 @@ function onSigninButtonClick() {
     var userData = {
         Username: $('#email').val(),
         Pool: userPool,
-        //Storage: new CookieStorage({secure: false, domain: 'gorunway.co'})
+        Storage: new AmazonCognitoIdentity.CookieStorage({secure: false, domain: 'gorunway.co'})
     };
 
     var cognitoUser = 
