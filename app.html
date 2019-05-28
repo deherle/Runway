@@ -184,18 +184,18 @@
                                     </div>
                                     <ul id="sortable-check" class"checklist-outer" style="margin: 20px 0 20px 0; padding: 0; list-style: none;">
                                         <li class="sortable-checklist-item">
-                                            <div class="checkitem-wrapper" style="margin-bottom: 15px;">
-                                                <div class="pretty p-icon p-round p-smooth" style="font-size: 1.5em;">
+                                            <div class="checkitem-wrapper" style="margin-bottom: 15px; display: flex; flex-direction: row;">
+                                                <div class="pretty p-icon p-round p-smooth" style="font-size: 1.5em; flex: 0 0 60px;">
                                                     <input id="checkbox-item" type="checkbox" />
                                                     <div class="state p-success">
                                                         <i class="icon check"></i>
                                                         <label style="color: white;">Blah</label>
                                                     </div>
                                                 </div>
-                                                <div class="ui input transparent" style="font-size: 1.3em; right: 60px; bottom: 3px; width: 83%;">
+                                                <div class="ui input transparent" style="font-size: 1.3em; right: 60px; bottom: 3px; flex: 1 1 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                                                     <input id="checkbox-input" type="text" placeholder="Enter item text" />
                                                 </div>
-                                                <button class="circular ui icon basic button" onclick="onDeleteCheckItemButtonClick(this);">
+                                                <button class="circular ui icon basic button" onclick="onDeleteCheckItemButtonClick(this);" style="flex: 0 0 30px;">
                                                     <i class="icon trash"></i>
                                                 </button>
                                             </div>

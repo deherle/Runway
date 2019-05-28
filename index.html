@@ -8,7 +8,11 @@
 
   <!-- Site Properties -->
   <title>Runway - Meetings made easy</title>
+  <link rel="icon" type="img/ico" href="favicon.ico">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
   <link rel="stylesheet" type="text/css" href="css/semantic.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css">
 
   <style type="text/css">
 
@@ -192,11 +196,82 @@
     </div>
 
     <div class="ui text container">
-      <h1 class="ui header">
+      <h1 class="ui header" style="margin-top: 1em;">
         Meetings made easy
       </h1>
       <h2>Runway helps you build <i>gorgeous</i> agendas, take meeting notes, capture action items and more.</h2>
-      <div class="ui huge primary button">Get Started <i class="right arrow icon"></i></div>
+
+      <ul id="sortable" class"agenda-topics" style="margin-top: 4em;">
+        <li class="sortable-agenda-topic">
+            <div class="agenda-topic" style="border-left: 20px solid #21ba45;" data-aos="fade-in" data-aos-delay="100" data-aos-duration="1000" data-aos-mirror="true" data-aos-once="false">
+                <div class="time-control">
+                    <div class="ui left right action input">
+                        <button class="ui left icon button">
+                            <i class="minus icon"></i>
+                        </button>
+                        <input type="number" id="duration" class="topic-duration" value="5">
+                        <label style="position: absolute; right: 56px; top: 10px;">mins</label>
+                        <button class="ui right icon button">
+                            <i class="plus icon"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="ui input transparent massive topic-title">
+                    <input type="text" placeholder="Enter a topic" value="Introductions">
+                </div>
+                <button class="circular ui icon basic button">
+                    <i class="icon trash"></i>
+                </button>
+            </div>
+        </li>
+        <li class="sortable-agenda-topic">
+          <div class="agenda-topic" style="border-left: 20px solid #FF6600;" data-aos="fade-in" data-aos-delay="500" data-aos-duration="1000" data-aos-mirror="true" data-aos-once="false">
+              <div class="time-control">
+                  <div class="ui left right action input">
+                      <button class="ui left icon button">
+                          <i class="minus icon"></i>
+                      </button>
+                      <input type="number" id="duration" class="topic-duration" value="15">
+                      <label style="position: absolute; right: 47px; top: 10px;">mins</label>
+                      <button class="ui right icon button">
+                          <i class="plus icon"></i>
+                      </button>
+                  </div>
+              </div>
+              <div class="ui input transparent massive topic-title">
+                  <input type="text" placeholder="Enter a topic" value="Budget and Financials">
+              </div>
+              <button class="circular ui icon basic button">
+                  <i class="icon trash"></i>
+              </button>
+          </div>
+      </li>
+      <li class="sortable-agenda-topic">
+        <div class="agenda-topic" style="border-left: 20px solid #FF0800;" data-aos="fade-in" data-aos-delay="1000" data-aos-duration="1000" data-aos-mirror="true" data-aos-once="false">
+            <div class="time-control">
+                <div class="ui left right action input">
+                    <button class="ui left icon button">
+                        <i class="minus icon"></i>
+                    </button>
+                    <input type="number" id="duration" class="topic-duration" value="10">
+                    <label style="position: absolute; right: 47px; top: 10px;">mins</label>
+                    <button class="ui right icon button">
+                        <i class="plus icon"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="ui input transparent massive topic-title">
+                <input type="text" placeholder="Enter a topic" value="Review Schedule and Timing">
+            </div>
+            <button class="circular ui icon basic button">
+                <i class="icon trash"></i>
+            </button>
+        </div>
+    </li>
+      </ul>
+
+      <div class="ui huge primary button" style="margin: 2em 0;">Get Started <i class="right arrow icon"></i></div>
+    
     </div>
 
   </div>
@@ -205,13 +280,33 @@
     <div class="ui middle aligned stackable grid container">
       <div class="row">
         <div class="eight wide column">
-          <h3 class="ui header">We Help Companies and Companions</h3>
-          <p>We can give your company superpowers to do things that they never thought possible. Let us delight your customers and empower your needs...through pure data analytics.</p>
-          <h3 class="ui header">We Make Bananas That Can Dance</h3>
-          <p>Yes that's right, you thought it was the stuff of dreams, but even bananas can be bioengineered.</p>
+          <h3 class="ui header">Notes</h3>
+          <p>Take notes, plan out what you'd like to say or capture meeting minutes. Free form editing at your fingertips.</p>
+          <h3 class="ui header">Checklists</h3>
+          <p>Trying to drive though a series of items to finish off? Include a checklist, and complete as-you-go.</p>
+          <h3 class="ui header">Files</h3>
+          <p>Everyone needs to be on the same page, so attach those PDF tables, Excel budgets or MP4 recordings to your agenda.</p>
         </div>
         <div class="six wide right floated column">
-          <img src="assets/images/wireframe/white-image.png" class="ui large bordered rounded image">
+          <ul id="sortable-check" class"checklist-outer" style="margin: 20px 0 20px 0; padding: 0; list-style: none;">
+            <li class="sortable-checklist-item">
+                <div class="checkitem-wrapper" style="margin-bottom: 15px;">
+                    <div class="pretty p-icon p-round p-smooth" style="font-size: 1.5em;">
+                        <input id="checkbox-item" type="checkbox" />
+                        <div class="state p-success">
+                            <i class="icon check"></i>
+                            <label style="color: white;">Blah</label>
+                        </div>
+                    </div>
+                    <div class="ui input transparent" style="font-size: 1.3em; right: 60px; bottom: 3px; width: 83%;">
+                        <input id="checkbox-input" type="text" placeholder="Enter item text" />
+                    </div>
+                    <button class="circular ui icon basic button" onclick="onDeleteCheckItemButtonClick(this);">
+                        <i class="icon trash"></i>
+                    </button>
+                </div>
+            </li>
+        </ul>
         </div>
       </div>
       <div class="row">
@@ -227,14 +322,12 @@
     <div class="ui equal width stackable internally celled grid">
       <div class="center aligned row">
         <div class="column">
-          <h3>"What a Company"</h3>
-          <p>That is what they all say about us</p>
+          <h3>"I love getting everyone on the same page."</h3>
+          <p>-Ab Dosil, VIS Strata 6000</p>
         </div>
         <div class="column">
-          <h3>"I shouldn't have gone with their competitor."</h3>
-          <p>
-            <img src="assets/images/avatar/nan.jpg" class="ui avatar image"> <b>Nan</b> Chief Fun Officer Acme Toys
-          </p>
+          <h3>"Google Docs just wasn't cutting it for us, we were looking for an integrated experience."</h3>
+          <p>-Rod Sterling, Embassy Suites</p>
         </div>
       </div>
     </div>
@@ -284,6 +377,9 @@
     </div>
   </div>
 </div>
+
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script>AOS.init();</script>
 
 </body>
 
