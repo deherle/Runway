@@ -98,48 +98,34 @@ function getNextAgendaTopicColor() {
 
     var topicColor = $('.agenda-topic').last().attr('topic-color');
 
-    if(gSubscription == "Free") {
-
-        if(topicColor == "Green") {
+    switch(topicColor) {
+        case 'Green':
+            color = { 'Color' : 'Orange', 'Hex' : '#FF6600'  };
+            return color;
+        case 'Orange':
+            color = { 'Color' : 'Blue', 'Hex' : '#0E6EB8'  };
+            return color;
+        case 'Blue':
+            color = { 'Color' : 'Red', 'Hex' : '#FF0800'  };
+            return color;
+        case 'Red':
+            color = { 'Color' : 'Yellow', 'Hex' : '#FFD700'  };
+            return color;
+        case 'Yellow':
             color = { 'Color' : 'Purple', 'Hex' : '#B413EC'  };
             return color;
-        } else {
+        case 'Purple':
+            color = { 'Color' : 'Teal', 'Hex' : '#008080'  };
+            return color;
+        case 'Teal':
+            color = { 'Color' : 'Brown', 'Hex' : '#A52A2A'  };
+            return color;
+        case 'Brown':
             color = { 'Color' : 'Green', 'Hex' : '#21ba45'  };
             return color;
-        }
-
-    } else {
-
-        switch(topicColor) {
-            case 'Green':
-                color = { 'Color' : 'Orange', 'Hex' : '#FF6600'  };
-                return color;
-            case 'Orange':
-                color = { 'Color' : 'Blue', 'Hex' : '#0E6EB8'  };
-                return color;
-            case 'Blue':
-                color = { 'Color' : 'Red', 'Hex' : '#FF0800'  };
-                return color;
-            case 'Red':
-                color = { 'Color' : 'Yellow', 'Hex' : '#FFD700'  };
-                return color;
-            case 'Yellow':
-                color = { 'Color' : 'Purple', 'Hex' : '#B413EC'  };
-                return color;
-            case 'Purple':
-                color = { 'Color' : 'Teal', 'Hex' : '#008080'  };
-                return color;
-            case 'Teal':
-                color = { 'Color' : 'Brown', 'Hex' : '#A52A2A'  };
-                return color;
-            case 'Brown':
-                color = { 'Color' : 'Green', 'Hex' : '#21ba45'  };
-                return color;
-            default:
-                color = { 'Color' : 'Purple', 'Hex' : '#016936'  };
-                return color;
-        }
-
+        default:
+            color = { 'Color' : 'Purple', 'Hex' : '#016936'  };
+            return color;
     }
 
 }
@@ -166,11 +152,31 @@ function serializeMeeting() {
 
     meeting.MeetingID = gMeetingID;
 
-    var cognitoUser = getCognitoUser();
+    var poolData = {
+        UserPoolId : 'us-east-1_sGM3cf79D',
+        ClientId : '6ls106hn6p6cci7e2b6hch5coa',
+        Storage: new AmazonCognitoIdentity.CookieStorage({secure: false, domain: location.hostname})
+    };
+
+    var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+    var cognitoUser = userPool.getCurrentUser();
+
+    if (cognitoUser == null) {
+        if(window.location.href.indexOf('localhost') != -1) {
+            window.location = 'http://localhost/signin.html';
+        } else if(window.location.href.indexOf('test') != -1) {
+            window.location = 'https://www.test.gorunway.co/signin.html';
+        } else {
+            window.location = 'https://www.gorunway.co/signin.html';
+        }
+        
+    }
 
     meeting.AccountID = cognitoUser.username;
 
     meeting.Created = gMeetingCreated;
+
+    meeting.LastModified = moment().toJSON();
 
     meeting.Title = $('.meeting-title input').val() ? $('.meeting-title input').val() : undefined;
 
@@ -303,7 +309,7 @@ function loadSidebar() {
 
     if(!AWS.config.credentials) {
         if(location.hostname == 'localhost' || location.hostname == '') {
-            window.location.replace('file:///C:/meet/web/signin.html');
+            window.location.replace('http://localhost/signin.html');
         } else {
             window.location.replace('https://www.gorunway.co/signin.html?retUrl=https://www.gorunway.co/meeting?id=' + gMeetingID);
         }
@@ -339,7 +345,7 @@ function loadSidebar() {
         if (error) {
             console.log(error);
             if(location.hostname == 'localhost' || location.hostname == '') {
-                window.location.replace('file:///C:/meet/web/signin.html');
+                window.location.replace('http://localhost/signin.html');
             } else {
                 window.location.replace('https://www.gorunway.co/signin.html?retUrl=https://www.gorunway.co/meeting?id=' + gMeetingID);
             }

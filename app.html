@@ -34,6 +34,7 @@
         <script type="text/javascript" src="js/trix.js"></script>
         <script type="text/javascript" src="js/modals.js"></script>
         <script type="text/javascript" src="js/moment.min.js"></script>
+        <script type="text/javascript" src="js/lodash.js"></script>
         <script type="text/javascript" src="js/events.js"></script>
         <script type="text/javascript" src="js/helpers.js"></script>
         <script type="text/javascript" src="js/globals.js"></script>
@@ -42,7 +43,7 @@
     </head>
     <body>
         <div class="html ui top attached segment" style="border:none;">
-            <div class="ui top attached demo menu" style="border:none;">
+            <div class="ui top attached demo menu secondary" style="border:none;">
                 <a class="item hamburger" onclick="toggleSidebar();">
                     <i class="sidebar icon"></i>
                 </a>
@@ -52,13 +53,19 @@
                     <i class="plus icon"></i>
                     New Meeting
                 </button>
-                <button class="ui icon button basic account-settings-button"
-                    style="font-size: 1.5em; -webkit-box-shadow: none; box-shadow: none;
-                    flex: 1;
-                    text-align: right;" id="app-settings-button"
-                    onclick="showAccountModal();">
-                    <i class="cog icon account-settings-button" data-content="Account settings"></i>
-                </button>
+                <div class="right menu">
+                    <span class="item meeting-save-status">
+                        <div class="ui active inline loader mini" style="margin-right: 0.5em; opacity: 0;"></div>
+                        <span class="meeting-save-message">All changes saved!</span>
+                    </span>
+                    <button class="ui item icon button basic account-settings-button"
+                        style="font-size: 1.5em; -webkit-box-shadow: none; box-shadow: none;
+                        flex: 1;
+                        text-align: right;" id="app-settings-button"
+                        onclick="showAccountModal();">
+                        <i class="cog icon account-settings-button" data-content="Account settings"></i>
+                    </button>
+                </div>
             </div>
             <div class="ui bottom attached segment pushable" style="border:none;">
                 <div class="ui labeled cards left inline vertical wide sidebar visible menu" style="border: none; box-shadow: none;">
@@ -187,12 +194,12 @@
                                             <div class="checkitem-wrapper" style="margin-bottom: 15px; display: flex; flex-direction: row;">
                                                 <div class="pretty p-icon p-round p-smooth" style="font-size: 1.5em; flex: 0 0 60px;">
                                                     <input id="checkbox-item" type="checkbox" />
-                                                    <div class="state p-success">
+                                                    <div class="state p-success" style="position: relative;">
                                                         <i class="icon check"></i>
                                                         <label style="color: white;">Blah</label>
                                                     </div>
                                                 </div>
-                                                <div class="ui input transparent" style="font-size: 1.3em; right: 60px; bottom: 3px; flex: 1 1 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                                <div class="ui input transparent" style="font-size: 1.3em; right: 60px; bottom: 7px; flex: 1 1 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                                                     <input id="checkbox-input" type="text" placeholder="Enter item text" />
                                                 </div>
                                                 <button class="circular ui icon basic button" onclick="onDeleteCheckItemButtonClick(this);" style="flex: 0 0 30px;">

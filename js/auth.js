@@ -116,12 +116,14 @@ function onSubmitCodeClick() {
 
 function onSigninButtonClick() {
 
+    console.log(location.hostname);
+
     $('.spinner').addClass('active');
 
     var poolData = {
         UserPoolId : 'us-east-1_sGM3cf79D',
         ClientId : '6ls106hn6p6cci7e2b6hch5coa',
-        Storage : new AmazonCognitoIdentity.CookieStorage({secure: false, domain: 'gorunway.co'}) 
+        Storage : new AmazonCognitoIdentity.CookieStorage({secure: false, domain: location.hostname}) 
     };
     
     var userPool = 
@@ -138,7 +140,7 @@ function onSigninButtonClick() {
     var userData = {
         Username: $('#email').val(),
         Pool: userPool,
-        Storage: new AmazonCognitoIdentity.CookieStorage({secure: false, domain: 'gorunway.co'})
+        Storage: new AmazonCognitoIdentity.CookieStorage({secure: false, domain: location.hostname})
     };
 
     var cognitoUser = 
@@ -147,11 +149,7 @@ function onSigninButtonClick() {
     cognitoUser.authenticateUser(authenticationDetails, {
         onSuccess: function (result) {
             var accessToken = result.getAccessToken().getJwtToken();
-            if(location.hostname == 'localhost' || location.hostname == '') {
-                window.location.replace('file:///C:/meet/web/app.html');
-            } else {
-                window.location.replace('https://app.gorunway.co');
-            }
+            window.location = window.location.origin + '/app.html';
         },
         onFailure: function(err) {
             $('.spinner').removeClass('active');
@@ -176,11 +174,7 @@ function onSignOutClick() {
   
     cognitoUser.signOut();
   
-    if(location.hostname == 'localhost' || location.hostname == '') {
-      window.location.replace('file:///C:/meet/web/signin.html');
-    } else {
-      window.location.replace('https://www.gorunway.co/signin.html?retUrl=https://www.gorunway.co/meeting?id=' + gMeetingID);
-    }
+    window.location.replace(window.hostname + '/signin.html?retUrl=' + window.hostname + '/meeting?id=' + gMeetingID);
   
   }
 

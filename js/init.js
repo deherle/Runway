@@ -41,6 +41,8 @@ window.onload = function() {
 
                 $('.no-comments').hide();
 
+                onSaveMeetingEvent();
+
             }
 
         }
@@ -167,6 +169,16 @@ window.onload = function() {
 
 }
 
+function checkMeetingForChangesAndUpdate() {
+
+    var currentMeeting = serializeMeeting();
+
+    if( !_.isEqual(currentMeeting, gLastSerializedMeeting) ) {
+        console.log("Meeting updated... saving.");
+        onSaveMeetingEvent();
+    }
+
+}
 
 function toggleSidebar() {
     $('.ui.sidebar').sidebar('toggle');
@@ -175,13 +187,9 @@ function toggleSidebar() {
 function onStartupLogic() {
 
     // Accomodate the following cases:
-    // 1. Unauthenticated user with valid meeting id in url
-    // 2. Authenticated user with valid meeting id in url
-    // 3. Unauthenticated user with no valid parameters in url
-    // 4. Unauthenticated or authenticated user with invalid meeting id in URL
-    // 5. Authenticated user with no id in url, and a meeting id in local storage
-    // 6. Authenticated user with no id in url, no meeting id in local storage, and saved meetings
-    // 7. Authenticated user with no id in url, no meeting id in local storage, no saved meetings
+    // 1. Authenticated user with no id in url, and a meeting id in local storage
+    // 2. Authenticated user with no id in url, no meeting id in local storage, and saved meetings
+    // 3. Authenticated user with no id in url, no meeting id in local storage, no saved meetings
 
     var meetingID = getUrlParameterByName('id', window.location.href);
 
@@ -190,7 +198,7 @@ function onStartupLogic() {
         var poolData = {
             UserPoolId : 'us-east-1_sGM3cf79D',
             ClientId : '6ls106hn6p6cci7e2b6hch5coa',
-            Storage: new AmazonCognitoIdentity.CookieStorage({secure: false, domain: 'gorunway.co'})
+            Storage: new AmazonCognitoIdentity.CookieStorage({secure: false, domain: location.hostname})
         };
     
         var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
@@ -226,22 +234,45 @@ function onStartupLogic() {
 
                     if(lastMeetingID) {
                     
-                        // Try and retrieve the last meeting the user was viewing...
-                        $.ajax({
-                            method: 'GET',
-                            url: 'https://api.gorunway.co/meeting?id=' + lastMeetingID,
-                            contentType: "application/json",
+                        var apigClient;
+    
+                        var params = {};
+                    
+                        var body = null;
+                        
+                        var additionalParams = {
+                            // If there are any unmodeled query parameters or headers that must be
+                            //   sent with the request, add them here.
                             headers: {
-                                "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
-                                "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS 
-                            }, 
-                            success: function(data) {
-                                renderMeeting(data.Item);
-                                $('#meeting-loader').removeClass('active');       
+                                'Content-Type': 'application/json'
                             },
-                            error: function(data) {
-                                console.log(data);
-                                $('#meeting-loader').removeClass('active');
+                            queryParams: {
+                                id : lastMeetingID
+                            }
+                        };
+                    
+                        AWS.config.credentials.refresh((error) => {
+                            if (error) {
+                                console.log(error);
+                                window.location.replace(window.hostname + '/signin.html?retUrl=' + window.hostname + '/meeting?id=' + meetingID);
+                            } else {
+                    
+                                // Appears the AWS object is populated with credential info on call to refresh...
+                                apigClient = apigClientFactory.newClient({
+                                    accessKey: AWS.config.credentials.accessKeyId,
+                                    secretKey: AWS.config.credentials.secretAccessKey,
+                                    sessionToken: AWS.config.credentials.sessionToken
+                                });
+                    
+                                apigClient.meetingGet(params, body, additionalParams)
+                                .then(function(data) {
+                                    renderMeeting(data.data.Item);
+                                    $('#meeting-loader').removeClass('active');
+                                }).catch(function(err) {
+                                    console.log(err);
+                                    $('#meeting-loader').removeClass('active');
+                                });
+                                
                             }
                         });
                         
@@ -254,11 +285,7 @@ function onStartupLogic() {
                 } else {
 
                     // Have user login
-                    if(location.hostname == 'localhost' || location.hostname == '') {
-                        window.location.replace('file:///C:/meet/web/signin.html');
-                    } else {
-                        //window.location.replace('https://www.gorunway.co/signin.html');
-                    }
+                    window.location.replace(window.hostname + '/signin.html');
 
                 }
                 
@@ -267,11 +294,7 @@ function onStartupLogic() {
         } else {
 
             // Have user login
-            if(location.hostname == 'localhost' || location.hostname == '') {
-                window.location.replace('file:///C:/meet/web/signin.html');
-            } else {
-                //window.location.replace('https://www.gorunway.co/signin.html');
-            }
+            window.location.replace(window.hostname + '/signin.html');
             
         }
 
@@ -280,7 +303,7 @@ function onStartupLogic() {
         var poolData = {
             UserPoolId : 'us-east-1_sGM3cf79D',
             ClientId : '6ls106hn6p6cci7e2b6hch5coa',
-            Storage: new CookieStorage({secure: false, domain: 'gorunway.co'})
+            Storage: new AmazonCognitoIdentity.CookieStorage({secure: false, domain: location.hostname})
         };
     
         var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
@@ -295,27 +318,50 @@ function onStartupLogic() {
                 }
 
                 if(!session.isValid()) {
-                    // Disable and hide other UI controls
-                    $('.ui.top.menu').css('opacity', '0');
-                    disableUnauthenticatedUserControls();
-                } 
+                    // Force user to login
+                    window.location.replace(window.hostname + '/signin.html?retUrl=' + window.hostname + '/meeting?id=' + meetingID);
+                }
 
-                $.ajax({
-                    method: 'GET',
-                    url: 'https://api.gorunway.co/meeting?id=' + meetingID,
-                    contentType: "application/json",
+                var apigClient;
+    
+                var params = {};
+            
+                var body = null;
+                
+                var additionalParams = {
+                    // If there are any unmodeled query parameters or headers that must be
+                    //   sent with the request, add them here.
                     headers: {
-                        "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
-                        "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS 
-                      }, 
-                    success: function(data) {
-                        renderMeeting(data.Item);
-                        localStorage.setItem('runway_last_meeting_id', meetingID);
-                        $('#meeting-loader').removeClass('active');       
+                        'Content-Type': 'application/json'
                     },
-                    error: function(data) {
-                        console.log(data);
-                        $('#meeting-loader').removeClass('active');
+                    queryParams: {
+                        id : meetingID
+                    }
+                };
+            
+                AWS.config.credentials.refresh((error) => {
+                    if (error) {
+                        console.log(error);
+                        window.location.replace(window.hostname + '/signin.html?retUrl=' + window.hostname + '/meeting?id=' + meetingID);
+                    } else {
+            
+                        // Appears the AWS object is populated with credential info on call to refresh...
+                        apigClient = apigClientFactory.newClient({
+                            accessKey: AWS.config.credentials.accessKeyId,
+                            secretKey: AWS.config.credentials.secretAccessKey,
+                            sessionToken: AWS.config.credentials.sessionToken
+                        });
+            
+                        apigClient.meetingGet(params, body, additionalParams)
+                        .then(function(data) {
+                            renderMeeting(data.data.Item);
+                            localStorage.setItem('runway_last_meeting_id', meetingID);
+                            $('#meeting-loader').removeClass('active');
+                        }).catch(function(err) {
+                            console.log(err);
+                            $('#meeting-loader').removeClass('active');
+                        });
+                        
                     }
                 });
 
@@ -323,31 +369,7 @@ function onStartupLogic() {
 
         } else {
 
-            // TODO: We need to show a login button to authenticate...
-            //
-
-            // Disable and hide other UI controls
-            $('.ui.top.menu').css('opacity', '0');
-            disableUnauthenticatedUserControls();
-
-            $.ajax({
-                method: 'GET',
-                url: 'https://api.gorunway.co/meeting?id=' + meetingID,
-                contentType: "application/json",
-                headers: {
-                    "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
-                    "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS 
-                  }, 
-                success: function(data) {
-                    renderMeeting(data.Item);
-                    localStorage.setItem('runway_last_meeting_id', meetingID);
-                    $('#meeting-loader').removeClass('active');       
-                },
-                error: function(data) {
-                    console.log(data);
-                    $('#meeting-loader').removeClass('active');
-                }
-            });
+            window.location.replace(window.hostname + '/signin.html?retUrl=' + window.hostname + '/meeting?id=' + meetingID);
 
         }
 

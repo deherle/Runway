@@ -72,12 +72,13 @@ function onNewMeetingButtonClick() {
 
 }
 
-function onSaveMeetingButtonClick() {
+function onSaveMeetingEvent() {
 
     var meeting = serializeMeeting();
     var method = '';
 
-    $('#meeting-loader').addClass('active');
+    //$('#meeting-loader').addClass('active');
+    $('.meeting-save-status .loader').css('opacity','1');
 
     if(gMeetingID == '') {
         method = 'POST';
@@ -91,16 +92,11 @@ function onSaveMeetingButtonClick() {
         sessionToken: AWS.config.credentials.sessionToken
     });
     
-    var params = {
-        // This is where any modeled request parameters should be added.
-        // The key is the parameter name, as it is defined in the API in API Gateway.
-    };
+    var params = {};
     
     var body = meeting;
     
     var additionalParams = {
-        // If there are any unmodeled query parameters or headers that must be
-        //   sent with the request, add them here.
         headers: {
             'Content-Type': 'application/json'
         },
@@ -111,9 +107,9 @@ function onSaveMeetingButtonClick() {
         if (error) {
             console.log(error);
             if(location.hostname == 'localhost' || location.hostname == '') {
-                window.location.replace('file:///C:/meet/web/signin.html');
+                window.location.replace('http://localhost/signin.html');
             } else {
-                window.location.replace('https://www.gorunway.co/signin.html?retUrl=https://www.gorunway.co/meeting?id=' + gMeetingID);
+                window.location.replace('https://www.gorunway.co/signin.html?retUrl=https://app.gorunway.co/meeting?id=' + gMeetingID);
             }
         } else {
             if(method == 'POST') {
@@ -124,23 +120,24 @@ function onSaveMeetingButtonClick() {
                     $('#sidebar-loader').addClass('active');
                     clearSidebar();
                     loadSidebar();
-                    $('.meeting-details .icon .save').removeClass('Orange');
-                    $('#meeting-loader').removeClass('active');   
+                    $('.meeting-save status .loader').css('opacity','0');
+                    var fromNow = moment(meeting.LastModified).fromNow();
+                    $('.meeting-save-message').val('Meeting saved ' + fromNow + ' ago.');
                 }).catch(function(err) {
                     console.log(err);
-                    $('#meeting-loader').removeClass('active');
                 });
             } else {
                 apigClient.meetingPut(params, body, additionalParams)
                 .then(function(result) {
-                    $('.meeting-details .icon .save').removeClass('Orange');
-                    $('#meeting-loader').removeClass('active');   
+                    $('.meeting-save status .loader').css('opacity','0');
+                    var fromNow = moment(meeting.LastModified).fromNow();
+                    $('.meeting-save-message').val('Meeting saved ' + fromNow + ' ago.');
                 }).catch(function(err) {
                     console.log(err);
                     if(err.message == 'The security token included in the request is expired') {
         
                     }
-                    $('#meeting-loader').removeClass('active');
+                    $('.meeting-save status .loader').css('opacity','0');
                 });
             }
         }
@@ -180,11 +177,7 @@ function onMeetingCardClick(element) {
     AWS.config.credentials.refresh((error) => {
         if (error) {
             console.log(error);
-            if(location.hostname == 'localhost' || location.hostname == '') {
-                window.location.replace('file:///C:/meet/web/signin.html');
-            } else {
-                window.location.replace('https://www.gorunway.co/signin.html?retUrl=https://www.gorunway.co/meeting?id=' + meetingID);
-            }
+            window.location.replace(window.hostname + '/signin.html?retUrl=' + window.hostname + '/meeting?id=' + meetingID);
         } else {
 
             // Appears the AWS object is populated with credential info on call to refresh...
@@ -277,7 +270,7 @@ function onFileUploadClick(files) {
     AWS.config.credentials.refresh((error) => {
         if (error) {
             if(location.hostname == 'localhost' || location.hostname == '') {
-                window.location.replace('file:///C:/meet/web/signin.html');
+                window.location.replace('http://localhost/signin.html');
             } else {
                 window.location.replace('https://www.gorunway.co/signin.html?retUrl=https://www.gorunway.co/meeting?id=' + gMeetingID);
             }
@@ -383,7 +376,7 @@ function onDeleteFileButtonClick(element) {
 
         if (error) {
             if(location.hostname == 'localhost' || location.hostname == '') {
-                window.location.replace('file:///C:/meet/web/signin.html');
+                window.location.replace('http://localhost/signin.html');
             } else {
                 window.location.replace('https://www.gorunway.co/signin.html?retUrl=https://www.gorunway.co/meeting?id=' + gMeetingID);
             }
@@ -429,5 +422,7 @@ function onDeleteCommentClick(element) {
     if(comments.length < 1) {
         $('.no-comments').show();
     }
+
+    onSaveMeetingEvent();
 
 }

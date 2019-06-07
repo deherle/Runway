@@ -148,12 +148,11 @@
 <div class="ui large top fixed hidden menu">
   <div class="ui container">
     <a class="active item">Home</a>
-    <a class="item">Work</a>
-    <a class="item">Company</a>
-    <a class="item">Careers</a>
+    <a class="item">Pricing</a>
+    <a class="item">Contact Us</a>
     <div class="right menu">
       <div class="item">
-        <a class="ui button">Log in</a>
+        <a class="ui button">Login</a>
       </div>
       <div class="item">
         <a class="ui primary button">Sign Up</a>
@@ -165,9 +164,8 @@
 <!-- Sidebar Menu -->
 <div class="ui vertical sidebar menu">
   <a class="active item">Home</a>
-  <a class="item">Work</a>
-  <a class="item">Company</a>
-  <a class="item">Careers</a>
+  <a class="item">Pricing</a>
+  <a class="item">Contact Us</a>
   <a class="item">Login</a>
   <a class="item">Signup</a>
 </div>
@@ -183,13 +181,12 @@
           <i class="sidebar icon"></i>
         </a>
         <div class="active item">
-          <img src="images/plane.png">
+          <a href="/"><img src="images/plane.png" style="width: 2.5em;"></a>
         </div>
         <a href="pricing.html" class="item">Pricing</a>
         <a href="contact.html" class="item">Contact Us</a>
-        <a href="about.html" class="item">About</a>
         <div class="right item">
-          <a href="signin.html" class="ui positive button">Log in</a>
+          <a href="signin.html" class="ui positive button">Login</a>
           <a href="signup.html" class="ui blue button">Sign Up</a>
         </div>
       </div>
@@ -288,31 +285,65 @@
           <p>Everyone needs to be on the same page, so attach those PDF tables, Excel budgets or MP4 recordings to your agenda.</p>
         </div>
         <div class="six wide right floated column">
-          <ul id="sortable-check" class"checklist-outer" style="margin: 20px 0 20px 0; padding: 0; list-style: none;">
-            <li class="sortable-checklist-item">
-                <div class="checkitem-wrapper" style="margin-bottom: 15px;">
-                    <div class="pretty p-icon p-round p-smooth" style="font-size: 1.5em;">
-                        <input id="checkbox-item" type="checkbox" />
-                        <div class="state p-success">
-                            <i class="icon check"></i>
-                            <label style="color: white;">Blah</label>
-                        </div>
-                    </div>
-                    <div class="ui input transparent" style="font-size: 1.3em; right: 60px; bottom: 3px; width: 83%;">
-                        <input id="checkbox-input" type="text" placeholder="Enter item text" />
-                    </div>
-                    <button class="circular ui icon basic button" onclick="onDeleteCheckItemButtonClick(this);">
-                        <i class="icon trash"></i>
-                    </button>
+          <div class="ui comments" style="margin-top: 20px; max-width: none;">
+            <div class="comment" data-aos="fade-left" data-aos-delay="200" data-aos-duration="500" data-aos-mirror="true" data-aos-once="false">
+                <div class="avatar" style="height: 35px; width: 35px; background-color: #0E6EB8; border-radius: 50%;">
+                    <span class="comment-icon-letter" style="color: white; font-size: 2em; position: relative; left: 4px;">M</span>
                 </div>
-            </li>
-        </ul>
+                <div class="content">
+                    <a class="author">Matt</a>
+                    <div class="metadata">
+                        <span class="date">Yesterday at 5:42PM</span>
+                    </div>
+                    <div class="text">
+                        I think we need another topic related to staffing. Thoughts?
+                    </div>
+                    <div class="actions">
+                        <a class="reply" onclick="onDeleteCommentClick(this);">Delete</a>
+                    </div>
+                </div>
+            </div>
+            <div class="comment" data-aos="fade-left" data-aos-delay="600" data-aos-duration="500" data-aos-mirror="true" data-aos-once="false">
+              <div class="avatar" style="height: 35px; width: 35px; background-color: #FF6600; border-radius: 50%;">
+                  <span class="comment-icon-letter" style="color: white; font-size: 2em; position: relative; left: 10px;">S</span>
+              </div>
+              <div class="content">
+                  <a class="author">Sarah</a>
+                  <div class="metadata">
+                      <span class="date">Today at 9:27AM</span>
+                  </div>
+                  <div class="text">
+                      Agreed, where should that go in the agenda?
+                  </div>
+                  <div class="actions">
+                      <a class="reply" onclick="onDeleteCommentClick(this);">Delete</a>
+                  </div>
+              </div>
+          </div>
+          <div class="comment" data-aos="fade-left" data-aos-delay="1000" data-aos-duration="500" data-aos-mirror="true" data-aos-once="false">
+            <div class="avatar" style="height: 35px; width: 35px; background-color: #B413EC; border-radius: 50%;">
+                <span class="comment-icon-letter" style="color: white; font-size: 2em; position: relative; left: 7px;">A</span>
+            </div>
+            <div class="content">
+                <a class="author">Andrea</a>
+                <div class="metadata">
+                    <span class="date">Today at 10:17AM</span>
+                </div>
+                <div class="text">
+                    Probably towards the end when we chat schedule. And budget.
+                </div>
+                <div class="actions">
+                    <a class="reply" onclick="onDeleteCommentClick(this);">Delete</a>
+                </div>
+            </div>
+        </div>                                            
+        </div>
         </div>
       </div>
       <div class="row">
-        <div class="center aligned column">
+        <!--<div class="center aligned column">
           <a class="ui huge button">Check Them Out</a>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -333,6 +364,7 @@
     </div>
   </div>
 
+  <!--
   <div class="ui vertical stripe segment">
     <div class="ui text container">
       <h3 class="ui header">Breaking The Grid, Grabs Your Attention</h3>
@@ -345,22 +377,26 @@
       <p>Yes I know you probably disregarded the earlier boasts as non-sequitur filler content, but its really true. It took years of gene splicing and combinatory DNA research, but our bananas can really dance.</p>
       <a class="ui large button">I'm Still Quite Interested</a>
     </div>
-  </div>
+  </div> -->
 
+  <div style="text-align: center;">
+    <div class="ui huge positive button" style="margin: 3em 0;">Sign Up</div>
+  </div>
 
   <div class="ui inverted vertical footer segment">
     <div class="ui container">
       <div class="ui stackable inverted divided equal height stackable grid">
         <div class="three wide column">
-          <h4 class="ui inverted header">About</h4>
+          <h4 class="ui inverted header">Runway</h4>
           <div class="ui inverted link list">
-            <a href="#" class="item">Sitemap</a>
-            <a href="#" class="item">Contact Us</a>
-            <a href="#" class="item">Religious Ceremonies</a>
-            <a href="#" class="item">Gazebo Plans</a>
+            <a href="/" class="item">Home</a>
+            <a href="pricing.html" class="item">Pricing</a>
+            <a href="contact.html" class="item">Contact Us</a>
+            <a href="signin.html" class="item">Login</a>
+            <a href="signup.html" class="item">Signup</a>
           </div>
         </div>
-        <div class="three wide column">
+        <!--<div class="three wide column">
           <h4 class="ui inverted header">Services</h4>
           <div class="ui inverted link list">
             <a href="#" class="item">Banana Pre-Order</a>
@@ -368,10 +404,11 @@
             <a href="#" class="item">How To Access</a>
             <a href="#" class="item">Favorite X-Men</a>
           </div>
-        </div>
+        </div> -->
         <div class="seven wide column">
-          <h4 class="ui inverted header">Footer Header</h4>
-          <p>Extra space for a call to action inside the footer that could help re-engage users.</p>
+          <h4 class="ui inverted header">Free 30-day trial</h4>
+          <p>Try Runway risk-free for 30 days to see what you think.</p>
+          <p><a href="signup.html">Sign up</a> now.</p>
         </div>
       </div>
     </div>
